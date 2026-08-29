@@ -28,10 +28,20 @@ public RoomListing createRoomListing(@RequestBody RoomListing roomListing) {
     roomListing.setUser(currentUser);
     return roomListingRepository.save(roomListing);
 }
-}
+
 
     @GetMapping
     public List<RoomListing> getAllRoomListings() {
         return roomListingRepository.findAll();
     }
+
+    @GetMapping("/search/location")
+public List<RoomListing> searchByLocation(@RequestParam String location) {
+    return roomListingRepository.findByLocationContainingIgnoreCase(location);
+}
+
+@GetMapping("/search/rent")
+public List<RoomListing> searchByMaxRent(@RequestParam Double maxRent) {
+    return roomListingRepository.findByRentLessThanEqual(maxRent);
+}
 }
