@@ -5,6 +5,10 @@ import com.roommate.roommate_backend.repository.RoomListingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.roommate.roommate_backend.model.User;
+import com.roommate.roommate_backend.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.util.List;
 
 @RestController
@@ -14,10 +18,17 @@ public class RoomListingController {
     @Autowired
     private RoomListingRepository roomListingRepository;
 
-    @PostMapping
-    public RoomListing createRoomListing(@RequestBody RoomListing roomListing) {
-        return roomListingRepository.save(roomListing);
-    }
+    @Autowired
+    private UserRepository userRepository;
+
+   @PostMapping
+public RoomListing createRoomListing(@RequestBody RoomListing roomListing) {
+    String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    User currentUser = userRepository.findByEmail(email);
+    roomListing.setUser(currentUser);
+    return roomListingRepository.save(roomListing);
+}
+}
 
     @GetMapping
     public List<RoomListing> getAllRoomListings() {
